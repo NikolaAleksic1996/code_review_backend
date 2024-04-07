@@ -31,3 +31,7 @@ phpstan.neon
 ###> PHPStorm ###
 .idea/
 ###> PHPStorm ###
+
+###> OpenApi local generated directory ###
+gen
+###> OpenApi local generated directory ###

@@ -2,6 +2,9 @@ openapi: 3.0.0
 info:
   title: Messages API
   version: 1.0.0
+#  you need add servers if you want to change default "localhost" ulr, in my case this is url because I use WLS for Windows11
+servers:
+  - url: http://172.17.23.239:8000/
 paths:
   /messages:
     get:
@@ -30,7 +33,7 @@ paths:
                     items:
                       type: "object"
                       properties:
-                        uuid: 
+                        uuid:
                           type: "string"
                         text:
                           type: "string"
@@ -58,5 +61,23 @@ paths:
           schema:
             type: "string"
       responses:
+        # - Please change status code to 200
         '204':
           description: Successfully sent
+
+#  My code version with POST method
+#  /messages/send:
+#    post: # Change method to 'post'
+#      summary: Send a Message
+#      requestBody:
+#        required: true
+#        content:
+#          application/json:
+#            schema:
+#              type: object
+#              properties:
+#                text:
+#                  type: string
+#      responses:
+#        '200':
+#          description: Successfully sent

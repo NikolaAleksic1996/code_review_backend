@@ -93,7 +93,7 @@ class Configuration
      *
      * @var string
      */
-    protected $host = 'http://localhost';
+    protected $host = 'http://172.17.23.239:8000';
 
     /**
      * User agent of the HTTP request, set to "OpenAPI-Generator/{version}/PHP" by default
@@ -472,7 +472,7 @@ class Configuration
     {
         return [
             [
-                "url" => "",
+                "url" => "http://172.17.23.239:8000",
                 "description" => "No description provided",
             ]
         ];
