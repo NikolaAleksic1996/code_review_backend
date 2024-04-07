@@ -23,6 +23,7 @@ class SendMessageHandler
         $message = new Message();
         $message->setUuid(Uuid::v6()->toRfc4122());
         $message->setText($sendMessage->text);
+        // - Please use MessageStatusType enum instead of hardcoded value
         $message->setStatus('sent');
         $message->setCreatedAt(new \DateTime());
 

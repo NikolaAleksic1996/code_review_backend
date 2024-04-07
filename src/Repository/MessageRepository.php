@@ -28,6 +28,10 @@ class MessageRepository extends ServiceEntityRepository
      * You should use parameters to safely handle user input to avoid SQL injection. You can use Doctrine's query builder to achieve this
      * You can create the MessageStatusType enum and update the repository method to use it
      */
+    /**
+     * @param Request $request
+     * @return array<Message>
+     */
     public function by(Request $request): array
     {
         $status = $request->query->get('status');

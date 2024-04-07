@@ -12,12 +12,12 @@ use Zenstruck\Messenger\Test\InteractsWithMessenger;
 class MessageControllerTest extends WebTestCase
 {
     use InteractsWithMessenger;
-    
+
     function test_list(): void
     {
         $this->markTestIncomplete('the Controller-Action needs tests');
     }
-    
+
     function test_that_it_sends_a_message(): void
     {
         $client = static::createClient();
