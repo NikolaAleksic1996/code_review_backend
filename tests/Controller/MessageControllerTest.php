@@ -1,7 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Controller;
+// namespace Controller;
+// namespace is incorrect, you need set correct path to this class, to be visible for whole project, like this
+namespace App\Tests\Controller;
 
 use App\Message\SendMessage;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
