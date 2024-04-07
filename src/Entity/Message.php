@@ -8,8 +8,26 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 /**
  * TODO: Review Message class
+ *
+ * - Annotation for mapping Doctrine ORM is OK
+ * - Properties is OK but for message status we can use Enum or final class with name MessageStatusType, because we
+ * have two status sent and read
+ * - Getters and Setters for encapsulation is OK but I prefer using also PHPDoc above method like this:
+ *  /**
+ *      @return int|null
+ * /
+ * public function getId(): ?int
+ * {
+ *  return $this->id;
+ * }
+ *
+ * We can add missed property updated_at
+ * Also we can use HasLifecycleCallbacks to update timestamps for created_at and updated_ad
+ * I prefer add soft delete functionality
+ *
  */
 class Message
 {
@@ -26,21 +44,36 @@ class Message
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $status = null;
-    
+
     #[ORM\Column(type: 'datetime')]
     private DateTime $createdAt;
 
+    #[ORM\Column(type: 'datetime')]
+    private DateTime $updatedAt;
 
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?DateTime $deletedAt = null;
+
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return string|null
+     */
     public function getUuid(): ?string
     {
         return $this->uuid;
     }
 
+    /**
+     * @param string $uuid
+     * @return $this
+     */
     public function setUuid(string $uuid): static
     {
         $this->uuid = $uuid;
@@ -48,11 +81,18 @@ class Message
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getText(): ?string
     {
         return $this->text;
     }
 
+    /**
+     * @param string $text
+     * @return $this
+     */
     public function setText(string $text): static
     {
         $this->text = $text;
@@ -60,11 +100,18 @@ class Message
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getStatus(): ?string
     {
         return $this->status;
     }
 
+    /**
+     * @param string $status
+     * @return $this
+     */
     public function setStatus(string $status): static
     {
         $this->status = $status;
@@ -72,15 +119,83 @@ class Message
         return $this;
     }
 
+    /**
+     * @return DateTime
+     */
     public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
+    /**
+     * @param DateTime $createdAt
+     * @return $this
+     */
     public function setCreatedAt(DateTime $createdAt): static
     {
         $this->createdAt = $createdAt;
-        
+
         return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getUpdatedAt(): DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param DateTime $updatedAt
+     * @return $this
+     */
+    public function setUpdatedAt(DateTime $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return DateTime|null
+     */
+    public function getDeletedAt(): ?DateTime
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * @param DateTime|null $deletedAt
+     * @return $this
+     */
+    public function setDeletedAt(?DateTime $deletedAt): static
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    // Method to handle soft deletion
+
+    /**
+     * @return void
+     */
+    public function softDelete(): void
+    {
+        $this->deletedAt = new DateTime();
+    }
+
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    /**
+     * @return void
+     */
+    public function updatedTimestamps(): void
+    {
+        $this->setUpdatedAt(new DateTime('now'));
+        if ($this->getCreatedAt() == null) {
+            $this->setCreatedAt(new DateTime('now'));
+        }
     }
 }
