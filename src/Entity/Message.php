@@ -30,7 +30,6 @@ class Message
     #[ORM\Column(type: 'datetime')]
     private DateTime $createdAt;
 
-
     public function getId(): ?int
     {
         return $this->id;
