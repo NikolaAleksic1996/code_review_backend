@@ -14,20 +14,12 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * - Annotation for mapping Doctrine ORM is OK
  * - Properties is OK but for message status we can use Enum or final class with name MessageStatusType, because we
- * have two status sent and read
- * - Getters and Setters for encapsulation is OK but I prefer using also PHPDoc above method like this:
- *  /**
- *      @return int|null
- * /
- * public function getId(): ?int
- * {
- *  return $this->id;
- * }
- *
- * We can add missed property updated_at
- * Also we can use HasLifecycleCallbacks to update timestamps for created_at and updated_ad
- * I prefer add soft delete functionality
- *
+ * have two status sent and read, also text property can be long, greater then 255 characters
+ * - Getters and Setters for encapsulation is OK also I prefer using also PHPDoc (method docblock) above method
+ * IMPROVEMENTS!!!
+ * - We can add missed property updated_at
+ * - Also we can use HasLifecycleCallbacks to update timestamps for created_at and updated_ad
+ * - I prefer add soft delete functionality
  */
 class Message
 {
@@ -38,10 +30,12 @@ class Message
 
     #[ORM\Column(type: Types::GUID)]
     private ?string $uuid = null;
-
+    // Achieve to text property greater than 255 characters and to be long
+    // #[ORM\Column(type: Types::TEXT)]
     #[ORM\Column(length: 255)]
     private ?string $text = null;
-
+    // Achieve to use enum for message status
+    // #[ORM\Column(type: MessageStatusType::class, nullable: true)]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $status = null;
 

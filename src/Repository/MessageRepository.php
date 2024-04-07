@@ -21,11 +21,17 @@ class MessageRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Message::class);
     }
-    
+
+    /**
+     * You should use the descriptive method name to indicate what the method does, for example "findByStatus"
+     * You should add method docblock
+     * You should use parameters to safely handle user input to avoid SQL injection. You can use Doctrine's query builder to achieve this
+     * You can create the MessageStatusType enum and update the repository method to use it
+     */
     public function by(Request $request): array
     {
         $status = $request->query->get('status');
-        
+
         if ($status) {
             $messages = $this->getEntityManager()
                 ->createQuery(
@@ -35,7 +41,17 @@ class MessageRepository extends ServiceEntityRepository
         } else {
             $messages = $this->findAll();
         }
-        
+
         return $messages;
+
+//        My code version
+
+//        $qb = $this->createQueryBuilder('m');
+//
+//        if ($status && MessageStatusType::tryFrom($status)) {
+//            $qb->andWhere('m.status = :status')
+//                ->setParameter('status', MessageStatusType::from($status)->value);
+//        }
+//         return $qb->getQuery()->getResult();
     }
 }
