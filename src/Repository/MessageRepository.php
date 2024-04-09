@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Message;
+use App\Enum\MessageStatusType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,32 +31,18 @@ class MessageRepository extends ServiceEntityRepository
      */
     /**
      * @param Request $request
-     * @return array<Message>
+     * @return Message[]
      */
     public function by(Request $request): array
     {
         $status = $request->query->get('status');
 
-        if ($status) {
-            $messages = $this->getEntityManager()
-                ->createQuery(
-                    sprintf("SELECT m FROM App\Entity\Message m WHERE m.status = '%s'", $status)
-                )
-                ->getResult();
-        } else {
-            $messages = $this->findAll();
+        $qb = $this->createQueryBuilder('message');
+
+        if ($status && is_string($status) && MessageStatusType::tryFrom($status)) {
+            $qb->where('message.status = :status')
+                ->setParameter('status', MessageStatusType::from($status)->value);
         }
-
-        return $messages;
-
-//        My code version
-
-//        $qb = $this->createQueryBuilder('m');
-//
-//        if ($status && MessageStatusType::tryFrom($status)) {
-//            $qb->andWhere('m.status = :status')
-//                ->setParameter('status', MessageStatusType::from($status)->value);
-//        }
-//         return $qb->getQuery()->getResult();
+        return $qb->getQuery()->getResult();
     }
 }

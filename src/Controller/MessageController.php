@@ -95,7 +95,7 @@ class MessageController extends AbstractController
             return new Response('Text is required', 400);
         }
 
-        $bus->dispatch(new SendMessage($text));
+        $bus->dispatch(new SendMessage((string)$text));
 
         /**
          * - Please return JsonResponse with the appropriate content and a 200 OK status code if content is needed

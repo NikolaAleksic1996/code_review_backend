@@ -7,6 +7,7 @@ namespace App\Tests\Controller;
 
 use App\Controller\MessageController;
 use App\Entity\Message;
+use App\Message\SendMessage;
 use App\Repository\MessageRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -89,17 +90,17 @@ class MessageControllerTest extends WebTestCase
         return [[$messages]];
     }
 
-//    function test_that_it_sends_a_message(): void
-//    {
-//        $client = static::createClient();
-//        $client->request('GET', '/messages/send', [
-//            'text' => 'Hello World',
-//        ]);
-//
-//        $this->assertResponseIsSuccessful();
-//        // This is using https://packagist.org/packages/zenstruck/messenger-test
-//        $this->transport('sync')
-//            ->queue()
-//            ->assertContains(SendMessage::class, 1);
-//    }
+    function test_that_it_sends_a_message(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/messages/send', [
+            'text' => 'Hello World',
+        ]);
+
+        $this->assertResponseIsSuccessful();
+        // This is using https://packagist.org/packages/zenstruck/messenger-test
+        $this->transport('sync')
+            ->queue()
+            ->assertContains(SendMessage::class, 1);
+    }
 }
