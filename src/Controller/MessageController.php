@@ -38,7 +38,7 @@ class MessageController extends AbstractController
      * You can use the methods attribute of the Route annotation to achieve this, and also you can add name of route
      * and use this method by name when is method call needed
      */
-    #[Route('/messages')]
+    #[Route('/messages', methods: ['GET'])]
     public function list(Request $request, MessageRepository $messages): Response
     {
         $messages = $messages->by($request);

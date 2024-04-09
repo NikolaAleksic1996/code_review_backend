@@ -19,12 +19,32 @@ class MessageControllerTest extends WebTestCase
     use InteractsWithMessenger;
 
     /**
+     * @return void
+     */
+    public function test_list(): void
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/messages');
+
+        $this->assertResponseIsSuccessful();
+
+        $this->assertResponseHeaderSame('Content-Type', 'application/json');
+        $responseContent = $client->getResponse()->getContent();
+        $this->assertIsString($responseContent);
+        $this->assertNotEmpty($responseContent);
+        $responseData = json_decode($responseContent, true);
+        $this->assertIsArray($responseData);
+        $this->assertArrayHasKey('messages', $responseData);
+    }
+
+    /**
      * @dataProvider createMessagesProvider
      *
      * @param Message[] $messages
      * @return void
      */
-    function test_list(array $messages): void
+    function test_case_simulate_with_data(array $messages): void
     {
         foreach ($messages as $message) {
             $this->assertInstanceOf(Message::class, $message);
