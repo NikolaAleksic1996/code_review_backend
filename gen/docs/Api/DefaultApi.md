@@ -1,6 +1,6 @@
 # OpenAPI\Client\DefaultApi
 
-All URIs are relative to http://localhost, except if the operation defines another base path.
+All URIs are relative to http://172.17.23.239:8000, except if the operation defines another base path.
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Message;
+use App\Enum\MessageStatusType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,21 +22,28 @@ class MessageRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Message::class);
     }
-    
+
+    /**
+     * You should use the descriptive method name to indicate what the method does, for example "findByStatus"
+     * You should add method docblock
+     * You should use parameters to safely handle user input to avoid SQL injection. You can use Doctrine's query builder to achieve this
+     * You can create the MessageStatusType enum and update the repository method to use it
+     */
+    /**
+     * @param Request $request
+     * @return Message[]
+     */
     public function by(Request $request): array
     {
         $status = $request->query->get('status');
-        
-        if ($status) {
-            $messages = $this->getEntityManager()
-                ->createQuery(
-                    sprintf("SELECT m FROM App\Entity\Message m WHERE m.status = '%s'", $status)
-                )
-                ->getResult();
-        } else {
-            $messages = $this->findAll();
+
+        $qb = $this->createQueryBuilder('message');
+
+        if ($status && is_string($status) && MessageStatusType::tryFrom($status)) {
+            $qb->andWhere('message.status = :status')
+                ->setParameter('status', MessageStatusType::from($status)->value);
         }
-        
-        return $messages;
+
+        return $qb->getQuery()->getResult();
     }
 }
