@@ -40,9 +40,10 @@ class MessageRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('message');
 
         if ($status && is_string($status) && MessageStatusType::tryFrom($status)) {
-            $qb->where('message.status = :status')
+            $qb->andWhere('message.status = :status')
                 ->setParameter('status', MessageStatusType::from($status)->value);
         }
+
         return $qb->getQuery()->getResult();
     }
 }

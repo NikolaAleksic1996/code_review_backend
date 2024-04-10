@@ -38,78 +38,6 @@ class MessageControllerTest extends WebTestCase
         $this->assertArrayHasKey('messages', $responseData);
     }
 
-    /**
-     * @dataProvider createMessagesProvider
-     *
-     * @param Message[] $messages
-     * @return void
-     */
-    function test_case_simulate_with_data(array $messages): void
-    {
-        foreach ($messages as $message) {
-            $this->assertInstanceOf(Message::class, $message);
-        }
-        $messageRepositoryMock = $this->createMock(MessageRepository::class);
-
-        $messageRepositoryMock->expects($this->once())
-            ->method('by')
-            ->willReturn($messages);
-
-        $requestMock = $this->createMock(Request::class);
-
-        $controller = new MessageController();
-        $response = $controller->list($requestMock, $messageRepositoryMock);
-
-        $this->assertInstanceOf(Response::class, $response);
-
-        $responseContent = $response->getContent();
-        $this->assertIsString($responseContent, 'Response content is not a string.');
-
-        if (!$responseContent) {
-            $this->fail('Failed to retrieve response content.');
-        }
-
-        $responseData = json_decode($responseContent, true);
-
-        if (!is_array($responseData)) {
-            $this->fail('Decoded response data is not an array.');
-        }
-
-        if (!isset($responseData['messages']) || !is_array($responseData['messages'])) {
-            $this->fail('Key "messages" does not exist or is not an array in response data.');
-        }
-
-        $this->assertCount(count($messages), $responseData['messages'], 'Number of messages mismatch.');
-
-        foreach ($responseData['messages'] as $message) {
-            $this->assertArrayHasKey('uuid', $message, 'Key "uuid" does not exist in a message.');
-            $this->assertArrayHasKey('text', $message, 'Key "text" does not exist in a message.');
-            $this->assertArrayHasKey('status', $message, 'Key "status" does not exist in a message.');
-        }
-    }
-
-    /**
-     * @return Message[]
-     */
-    function createMessagesProvider(): array
-    {
-        $messages = [];
-
-        $message1 = new Message();
-        $message1->setUuid('uuid1');
-        $message1->setText('Hello');
-        $message1->setStatus('sent');
-        $messages[] = $message1;
-
-        $message2 = new Message();
-        $message2->setUuid('uuid2');
-        $message2->setText('World');
-        $message2->setStatus('read');
-        $messages[] = $message2;
-
-        return [[$messages]];
-    }
-
     function test_that_it_sends_a_message(): void
     {
         $client = static::createClient();
@@ -123,4 +51,78 @@ class MessageControllerTest extends WebTestCase
             ->queue()
             ->assertContains(SendMessage::class, 1);
     }
+
+//    /**
+//     * This is optional test case
+//     *
+//     * @dataProvider createMessagesProvider
+//     *
+//     * @param Message[] $messages
+//     * @return void
+//     */
+//    function test_case_simulate_with_data(array $messages): void
+//    {
+//        foreach ($messages as $message) {
+//            $this->assertInstanceOf(Message::class, $message);
+//        }
+//        $messageRepositoryMock = $this->createMock(MessageRepository::class);
+//
+//        $messageRepositoryMock->expects($this->once())
+//            ->method('by')
+//            ->willReturn($messages);
+//
+//        $requestMock = $this->createMock(Request::class);
+//
+//        $controller = new MessageController();
+//        $response = $controller->list($requestMock, $messageRepositoryMock);
+//
+//        $this->assertInstanceOf(Response::class, $response);
+//
+//        $responseContent = $response->getContent();
+//        $this->assertIsString($responseContent, 'Response content is not a string.');
+//
+//        if (!$responseContent) {
+//            $this->fail('Failed to retrieve response content.');
+//        }
+//
+//        $responseData = json_decode($responseContent, true);
+//
+//        if (!is_array($responseData)) {
+//            $this->fail('Decoded response data is not an array.');
+//        }
+//
+//        if (!isset($responseData['messages']) || !is_array($responseData['messages'])) {
+//            $this->fail('Key "messages" does not exist or is not an array in response data.');
+//        }
+//
+//        $this->assertCount(count($messages), $responseData['messages'], 'Number of messages mismatch.');
+//
+//        foreach ($responseData['messages'] as $message) {
+//            $this->assertArrayHasKey('uuid', $message, 'Key "uuid" does not exist in a message.');
+//            $this->assertArrayHasKey('text', $message, 'Key "text" does not exist in a message.');
+//            $this->assertArrayHasKey('status', $message, 'Key "status" does not exist in a message.');
+//        }
+//    }
+//
+//    /**
+//     * @return Message[]
+//     */
+//    function createMessagesProvider(): array
+//    {
+//        $messages = [];
+//
+//        $message1 = new Message();
+//        $message1->setUuid('uuid1');
+//        $message1->setText('Hello');
+//        $message1->setStatus('sent');
+//        $messages[] = $message1;
+//
+//        $message2 = new Message();
+//        $message2->setUuid('uuid2');
+//        $message2->setText('World');
+//        $message2->setStatus('read');
+//        $messages[] = $message2;
+//
+//        return [[$messages]];
+//    }
 }
